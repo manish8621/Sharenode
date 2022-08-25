@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="static/style.css"/>
+      <title>ShareNode</title>
+  </head>
+  <body>
+      <nav>
+          <p id="banr">ShareNode</p>
+          <ul>
+              <li style="margin-left: 250px;"><a id="dl_anc">download</a></li>
+              <li><a id="ul_anc">upload</a></li>
+          </ul>
+      </nav>
+    <div id="container_div">
+      <div id="clip_show_div">
+        <form name="dynf" id="dynform" action="/cc" method="post">
+            <textarea name="data" id="code_element" style="
+            height:350px;
+            width:250px;
+            background-color: #e0e0e0;
+            border: none;">
+            </textarea>
+        </form>
+      </div>
+      <div id="submit_btn_div">
+            <button id="submit_btn">Submit</button>
+         </div>
+    </div>
+  </body>
+  <script>
+  let dynform=document.getElementById("dynform");
+  let code_ele=document.getElementById("code_element");
+  let submt = document.getElementById("submit_btn");
+  //request clipboard data from server
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload=function(){
+    let res = JSON.parse(this.response);
+    code_ele.innerHTML = res.cdata;
+    document.getElementById("ul_anc").setAttribute("href","/browse?path="+res.uplpth+"&mode=ul");
+    document.getElementById("dl_anc").setAttribute("href","/browse?path="+res.pth+"&mode=dl");
+    console.log("he responded");};
+  xhttp.open("GET",location.toString()+"getcc");
+  xhttp.send();
+
+
+  submt.onclick = ()=>{
+      dynform.submit();
+    }
+  </script>
+  </html>

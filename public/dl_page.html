@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="static/style.css"/>
+      <title>ShareNode</title>
+  </head>
+  <body>
+      <nav>
+          <p id="banr">ShareNode</p>
+          <ul>
+              <li style="margin-left: 250px;"><a href="/browse?path=/home/user1&mode=dl">download</a></li>
+              <li><a href="/browse?path=/home/user1&mode=ul">upload</a></li>
+          </ul>
+      </nav>
+    <div id="container_div">
+        
+        <center><h3 id="cwd" style="font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;"></h3></center>
+        <div id="ul_elements">
+            <img src="/static/ulico.png" id="ul_ico"/>
+            <form id="frmul" action="/upload" method="post" enctype="multipart/form-data">
+                
+                <input type="file" name="ufile" id="file_in"/><br><br>
+                <button type="submit" id="submit_btn">Upload</button>
+            </form>
+        </div>
+        <div id="files_div">
+        </div>
+    </div>
+</body>
+<script>
+    //checking the mode
+    let params = new URLSearchParams(window.location.search);
+    let path = params.get("path");
+    let mode = params.get("mode");
+    let files,folders;
+    let main_div = document.getElementById("files_div");
+    document.getElementById("cwd").innerHTML = path;
+    if(mode=="dl"){document.getElementById("ul_elements").style.display="none"}
+    let fun1= function(data){
+        files = data.files;
+        folders = data.folders;
+		folders.forEach(function(f) {
+            let anc = document.createElement("a");
+            anc.setAttribute("href","/browse?path="+path+"/"+f+"&mode=dl");
+            anc.setAttribute("class","anchor-normaliz");
+            anc.innerHTML = f;
+            main_div.appendChild(anc);
+        });
+        
+        files.forEach(function(f) {
+            let anc = document.createElement("a");
+            anc.setAttribute("href","/download?path="+path+"/"+f);
+            anc.setAttribute("class","anchor-normaliz");
+            anc.innerHTML = f;
+            main_div.appendChild(anc);
+        });
+            
+    };
+    fetch("http://"+location.host+"/"+"list?path="+path).then(promise=>promise.json()).then(data=>fun1(data));
+</script>
+</html>
